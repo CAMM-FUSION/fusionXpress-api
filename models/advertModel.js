@@ -1,5 +1,6 @@
 export const adverts = [];
 import mongoose from "mongoose";
+import { toJSON } from "@reis/mongoose-to-json";
 
 const advertSchema = new mongoose.Schema(
   {
@@ -17,6 +18,8 @@ const advertSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+advertSchema.plugin(toJSON);
 
 const Advert = mongoose.model("Advert", advertSchema);
 

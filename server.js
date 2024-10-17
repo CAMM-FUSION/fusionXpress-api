@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import advertRoutes from './routes/advertRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(cors());
 
 // Routes
 app.use(advertRoutes);
+app.use(categoryRoutes)
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('Database connected'))
