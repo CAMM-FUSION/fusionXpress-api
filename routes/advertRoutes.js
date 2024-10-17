@@ -1,5 +1,6 @@
 import express from 'express';
-import { getAdvert, getAdverts, createAdvert, updateAdvert, deleteAdvert } from '../controllers/advertController.js';
+import { createAdvert, updateAdvert, deleteAdvert } from '../controllers/advertController.js';
+import { getAdverts, getAdvert } from '../controllers/userAdvertController.js';
 
 const router = express.Router();
 
