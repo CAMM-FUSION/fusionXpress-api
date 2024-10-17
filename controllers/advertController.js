@@ -44,7 +44,7 @@ export const updateAdvert = async (req, res) => {
       category: category || undefined,
       description: description || undefined,
       price: price || undefined,
-      image: image|| undefined,  // Only update if a new image was uploaded
+      image: image || undefined,  // Only update if a new image was uploaded
     };
 
     // Find the Advert by ID and update it
@@ -81,4 +81,36 @@ export const deleteAdvert = async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: 'Failed to delete advert' });
   }
+
+};
+
+// Get all adverts (any user)
+export const getAdverts = async (req, res) => {
+  try {
+    const { filter = "{}", limit = 10, skip = 0, sort = "{}" } = req.query;
+    const adverts = await Advert
+      .find(JSON.parse(filter))
+      .sort(JSON.parse(sort))
+      .limit(limit)
+      .skip(skip);
+    res.status(200).json(adverts);
+  } catch (error) {
+    next(error);
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to fetch adverts' });
+  }
+};
+
+
+// Get a single advert (any user)
+export const getAdvert = async (req, res) => {
+  try {
+    const advert = await Advert.findById(req.params.id);
+    if (!advert) return res.status(404).json({ success: false, message: 'Advert not found' });
+    res.status(200).json({ success: true, data: advert });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to fetch advert' });
+  }
+
 };
