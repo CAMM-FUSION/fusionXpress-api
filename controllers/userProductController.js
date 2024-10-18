@@ -1,9 +1,31 @@
 import Product from "../models/productModel.js";
 
+
+// Search Products
+export const searchProducts = async (req, res) => {
+  try {
+    const { title, category } = req.query;
+    let query = {};
+
+    if (title) query.title = { $regex: title, $options: "i" };
+    if (category) query.category = { $regex: category, $options: "i" };
+
+    const products = await Product.find(query);
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 // Get all adverts (any user)
 export const getProducts = async (req, res) => {
   try {
-    const product = await Product.find();
+    const { filter = "{}", limit =10,skip =0 } = req.query;
+    const product = await Product
+    .find(JSON.parse(filter))
+    .sort(JSON.parse())
+    .limit(limit)
+    .skip(skip);
     res.status(200).json({ success: true, data: product });
   } catch (error) {
     console.error(error);
