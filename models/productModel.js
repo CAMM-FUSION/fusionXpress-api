@@ -1,8 +1,8 @@
-export const adverts = [];
+export const products = [];
 import mongoose from "mongoose";
 import { toJSON } from "@reis/mongoose-to-json";
 
-const advertSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
 
@@ -19,8 +19,8 @@ const advertSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-advertSchema.plugin(toJSON);
+productSchema.plugin(toJSON);
 
-const Advert = mongoose.model("Advert", advertSchema);
+const Product = mongoose.model("Product", productSchema);
 
-export default Advert;
+export default Product;
