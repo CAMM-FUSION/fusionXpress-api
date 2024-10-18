@@ -1,6 +1,6 @@
 import express from 'express';
-import { createProduct, updateProduct, deleteProduct } from '../controllers/advertController.js';
-import { getProducts, getProduct } from '../controllers/userAdvertController.js';
+import { createProduct, updateProduct, deleteProduct } from '../controllers/productController.js';
+import { getProducts, getProduct } from '../controllers/userProductController.js';
 
 const router = express.Router();
 

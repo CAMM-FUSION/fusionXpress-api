@@ -1,4 +1,4 @@
-import Product from "../models/advertModel.js";
+import Product from "../models/productModel.js";
 
 // Get all adverts (any user)
 export const getProducts = async (req, res) => {

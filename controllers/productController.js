@@ -1,4 +1,4 @@
-import Product from "../models/advertModel.js";
+import Product from "../models/productModel.js";
 import mongoose from "mongoose";
 
 // Create a new advert (Vendor only)
