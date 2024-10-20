@@ -1,13 +1,13 @@
-import Product from "../models/productModel.js";
+import Advert from "../models/advertModel.js";
 import mongoose from "mongoose";
 
 // Create a new advert (Vendor only)
-export const createProduct = async (req, res) => {
+export const createAdvert = async (req, res) => {
   try {
     const { title, category, description, price, image } = req.body;
 
     // Create a new book object with image path
-    const newAdvert = new Product({
+    const newAdvert = new Advert({
       title,
       category,
       description,
@@ -27,14 +27,14 @@ export const createProduct = async (req, res) => {
 };
 
 // Update an advert (Vendor only)
-export const updateProduct = async (req, res) => {
+export const updateAdvert = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, category, description, price, image } = req.body;
 
     // Validate MongoDB ObjectId (in case it's invalid)
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: 'Invalid Product ID' });
+      return res.status(400).json({ success: false, message: 'Invalid Advert ID' });
     }
 
 
@@ -48,37 +48,37 @@ export const updateProduct = async (req, res) => {
     };
 
     // Find the Advert by ID and update it
-    const updatedProduct = await Advert.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
+    const updateAdvert = await Advert.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
 
-    if (!updatedProduct) return res.status(404).json({ success: false, message: 'Product not found' });
+    if (!updateAdvert) return res.status(404).json({ success: false, message: 'Advert not found' });
 
     // Send the updated book data
-    res.status(200).json({ success: true, data: updatedProduct });
+    res.status(200).json({ success: true, data: updateAdvert });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Failed to update Product' });
+    res.status(500).json({ success: false, message: 'Failed to update Advert' });
   }
 };
 
 
 // Delete an advert (Vendor only)
-export const deleteProduct = async (req, res) => {
+export const deleteAdvert = async (req, res) => {
   try {
     const { id } = req.params;
 
     // Check if the ID is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: 'Invalid Product ID' });
+      return res.status(400).json({ success: false, message: 'Invalid Advert ID' });
     }
 
-    const deleteProduct = await Advert.findByIdAndDelete(id);  // Delete the book by its ID
-    if (!deleteProduct) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
+    const deleteAdvert = await Advert.findByIdAndDelete(id);  // Delete the book by its ID
+    if (!deleteAdvert) {
+      return res.status(404).json({ success: false, message: 'Advert not found' });
     }
 
-    res.status(200).json({ success: true, message: 'Product deleted successfully', data: deleteProduct });
+    res.status(200).json({ success: true, message: 'Advert deleted successfully', data: deleteAdvert });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Failed to delete Product' });
+    res.status(500).json({ success: false, message: 'Failed to delete Advert' });
   }
 };
