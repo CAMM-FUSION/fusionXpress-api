@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import advertRoutes from './routes/advertRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import userRouter from './routes/user.js';
+import vendorRouter from './routes/vendor.js';
 
 dotenv.config();
 
@@ -14,6 +16,10 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
+app.use(productRoutes);
+app.use(categoryRoutes);
+app.use(userRouter);
+app.use(vendorRouter)
 app.use(advertRoutes);
 app.use(categoryRoutes)
 
