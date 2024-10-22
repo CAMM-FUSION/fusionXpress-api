@@ -7,9 +7,9 @@ const router = express.Router();
 router.get('/adverts/category/:category', getAdvertsByCategory);
 
 // Private routes (Vendor only)
-router.post('/adverts', isAuthenticated, createAdvert); // Vendors Create
-router.patch('/adverts/:id', isAuthenticated, updateAdvert); // Vendors update
-router.delete('/adverts/:id', isAuthenticated, deleteAdvert); // Vendors delete
+router.post('/adverts', createAdvert); // Vendors Create
+router.patch('/adverts/:id', updateAdvert); // Vendors update
+router.delete('/adverts/:id', deleteAdvert); // Vendors delete
 
 // Public routes
 router.get('/adverts', getAdverts);
