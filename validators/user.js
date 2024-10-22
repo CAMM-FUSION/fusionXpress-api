@@ -1,0 +1,43 @@
+import Joi  from "joi";
+
+// validate signup
+export const signupUserValidator = Joi.object({
+    name: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    username: Joi.string().required(),
+    role: Joi.string().valid( 'user' )
+
+});
+
+// validate login
+export const loginUserValidator = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+});
+
+
+
+// validate signup
+export const signupVendorValidator = Joi.object({
+    fullName: Joi.string().required(),
+    storeName: Joi.string().required(),
+    phoneNumber: Joi.number().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    role: Joi.string().valid( 'vendor' )
+
+});
+
+// validate login
+export const loginVendorValidator = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+});
+
+
+// validate updateDashboard
+export const updateProfileValidator = Joi.object({
+    name: Joi.string(),
+    avatar: Joi.string()
+});

@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import userRouter from './routes/user.js';
+import vendorRouter from './routes/vendor.js';
 
 dotenv.config();
 
@@ -15,7 +17,9 @@ app.use(cors());
 
 // Routes
 app.use(productRoutes);
-app.use(categoryRoutes)
+app.use(categoryRoutes);
+app.use(userRouter);
+app.use(vendorRouter)
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('Database connected'))
