@@ -3,6 +3,7 @@ import { UserModel } from "../models/user.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { VendorModel } from "../models/vendor.js"
+import { mailTransporter } from "../utils/mail.js"
 
 // sign-up logic ( User )
 export const signupUser = async (req, res, next) => {
@@ -26,6 +27,13 @@ export const signupUser = async (req, res, next) => {
             ...value,
             password: hashedPassword
         }),
+
+        // Send email
+        await mailTransporter.sendMail({
+            to: value.email,
+            subject: 'User Registration',
+            text: `Welcome! ${value.username} to our shop FusionXpress!`
+        })
             res.status(201).json('User registered successfully!')
     } catch (error) {
         next(error);

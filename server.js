@@ -16,7 +16,6 @@ app.use(express.json());
 app.use(cors());
 
 // Routes
-app.use(productRoutes);
 app.use(categoryRoutes);
 app.use(userRouter);
 app.use(vendorRouter)
