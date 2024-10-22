@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const validateProduct = (req, res, next) => {
+export const validateAdvert = (req, res, next) => {
     const schema = Joi.object({
         title: Joi.string().required(),
         category: Joi.string().required(),
