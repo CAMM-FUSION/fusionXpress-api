@@ -35,6 +35,30 @@ export const hasPermission = (action) => {
       next(); // Proceed to the next middleware/route handler if permitted
     } catch (error) {
       next(error); // Pass errors to the error-handling middleware
+
     }
   };
 };
+
+// permission for user
+export const userPermission = (action) => {
+    return async (req, res, next) => {
+        try{
+            // find user from database
+            const user = await UserModel.findById(req.auth.id);
+            // use the vendor role to find their permission
+            const permission = permissions.find((value )=> value.role === user.role);
+            if (!permission) {
+                return res.status(403).json('No permission found!');
+            }
+            // check if permission actions include action
+            if (permission.actions.includes(action)) {
+                next();
+            } else {
+                res.status(403).json('Action not allowed!');
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+}

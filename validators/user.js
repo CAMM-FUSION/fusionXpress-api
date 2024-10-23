@@ -16,5 +16,26 @@ export const loginUserValidator = Joi.object({
     password: Joi.string().required()
 });
 
+// validate signup
+export const signupVendorValidator = Joi.object({
+    fullName: Joi.string().required(),
+    storeName: Joi.string().required(),
+    phoneNumber: Joi.number().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    role: Joi.string().valid( 'vendor' )
+
+});
+
+// validate login
+export const loginVendorValidator = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+});
 
 
+// validate updateDashboard
+export const updateVendorProfileValidator = Joi.object({
+    name: Joi.string(),
+    avatar: Joi.string()
+});

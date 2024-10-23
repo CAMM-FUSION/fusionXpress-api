@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import vendorModel from "../models/vendor.js";
+import { VendorModel } from "../models/vendor.js";
 import { signupVendorValidator, loginVendorValidator, getProfileValidator, updateProfileValidator } from "../validators/vendor.js";
 
 // Sign-up logic (Vendor)
@@ -13,7 +13,7 @@ export const signupVendor = async (req, res, next) => {
     }
 
     // Check if vendor already exists
-    const vendor = await vendorModel.findOne({ email: value.email });
+    const vendor = await VendorModel.findOne({ email: value.email });
     if (vendor) {
       return res.status(400).json({ message: "Vendor already exists" });
     }
@@ -22,7 +22,7 @@ export const signupVendor = async (req, res, next) => {
     const hashedPassword = bcrypt.hashSync(value.password, 10);
 
     // Save user into database
-    await vendorModel.create({
+    await VendorModel.create({
       ...value,
       password: hashedPassword,
     });
@@ -42,7 +42,7 @@ export const loginVendor = async (req, res, next) => {
     }
 
     // Find vendor with identifier
-    const vendor = await vendorModel.findOne({ email: value.email });
+    const vendor = await VendorModel.findOne({ email: value.email });
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found!" });
     }
@@ -80,7 +80,7 @@ export const getProfile = async (req, res, next) => {
       }
   
       // Find authenticated vendor
-      const vendor = await vendorModel.findById(req.auth.id).select("-password"); // Exclude password field
+      const vendor = await VendorModel.findById(req.auth.id).select("-password"); // Exclude password field
       if (!vendor) {
         return res.status(404).json({ message: "Vendor not found!" });
       }
@@ -105,7 +105,7 @@ export const updateProfile = async (req, res, next) => {
     }
 
     // Update vendor profile
-    await vendorModel.findByIdAndUpdate(req.auth.id, value);
+    await VendorModel.findByIdAndUpdate(req.auth.id, value);
     
     // Respond to request
     res.json("Vendor profile updated");
