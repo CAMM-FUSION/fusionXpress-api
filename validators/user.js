@@ -16,8 +16,6 @@ export const loginUserValidator = Joi.object({
     password: Joi.string().required()
 });
 
-
-
 // validate signup
 export const signupVendorValidator = Joi.object({
     fullName: Joi.string().required(),
