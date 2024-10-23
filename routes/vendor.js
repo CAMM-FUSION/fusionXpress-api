@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { userAvartarUpload } from "../middlewares/upload.js";
+import { advertIconUpload } from "../middlewares/upload.js";
 import { hasPermission, isAuthenticated } from "../middlewares/auth.js"
-import { getVendorProfile, loginVendor, logoutVendor, signupVendor, updateVendorProfile } from "../controllers/userController.js";
+import { getProfile, loginVendor, logoutVendor, signupVendor, updateProfile } from "../controllers/vendor.js";
+// import { getProfile, loginVendor,  } from "../controllers/vendor.js";
 
 const vendorRouter = Router()
 

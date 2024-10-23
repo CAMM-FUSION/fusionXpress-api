@@ -23,6 +23,22 @@ export const hasPermission = (action) => {
             // Retrieve the authenticated vendor
       const vendor = await VendorModel.findById(req.auth.id);
 
+      // Use the user role to define the permission
+      const permission = permissions.find(value => value.role === vendor.role);
+      if (!permission) {
+        return res.status(404).json({ message: 'No permission found!' });
+      }
+      // Check if the vendor has the required permission
+      if (permission.actions.includes(action)) {
+        return res.status(403).json('Action not allowed!');
+      }
+      next(); // Proceed to the next middleware/route handler if permitted
+    } catch (error) {
+      next(error); // Pass errors to the error-handling middleware
+
+    }
+  };
+};
 
 // permission for user
 export const userPermission = (action) => {
@@ -44,20 +60,5 @@ export const userPermission = (action) => {
         } catch (error) {
             next(error);
         }
-
-      // Use the user role to define the permission
-      const permission = permissions.find(value => value.role === vendor.role);
-      if (!permission) {
-        return res.status(404).json({ message: 'No permission found!' });
-      }
-      // Check if the vendor has the required permission
-      if (permission.actions.includes(action)) {
-        return res.status(403).json('Action not allowed!');
-      }
-      next(); // Proceed to the next middleware/route handler if permitted
-    } catch (error) {
-      next(error); // Pass errors to the error-handling middleware
-
     }
-  };
-};
+}

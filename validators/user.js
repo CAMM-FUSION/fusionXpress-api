@@ -18,8 +18,6 @@ export const loginUserValidator = Joi.object({
 
 
 
-<<<<<<< HEAD
-=======
 // validate signup
 export const signupVendorValidator = Joi.object({
     fullName: Joi.string().required(),
@@ -43,4 +41,3 @@ export const updateVendorProfileValidator = Joi.object({
     name: Joi.string(),
     avatar: Joi.string()
 });
->>>>>>> main
