@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { toJSON } from "@reis/mongoose-to-json";
 
 const vendorSchema = new Schema({
@@ -8,14 +8,13 @@ const vendorSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     avatar: { type: String },
-    user: { type: Types.ObjectId, required: true, ref: 'Vendor'},
-    role: {
-        type: String, default: 'vendor', required: true
-    }
+    role: { type: String, default: 'vendor'}
     }, {
     timestamps: true
 });
 
 vendorSchema.plugin(toJSON);
 
-export const VendorModel = model('Vendor', vendorSchema);
+export const VendorModel = model('vendor', vendorSchema);
+
+export default VendorModel
