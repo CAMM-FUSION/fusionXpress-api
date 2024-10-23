@@ -6,10 +6,15 @@ const userSchema = new Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+<<<<<<< HEAD
+=======
+    role: {type: String, default: 'user', required: true}
+>>>>>>> main
     }, {
     timestamps: true
 });
 
 userSchema.plugin(toJSON);
 
-export const UserModel = model('User', userSchema);
+export const UserModel = model("User", userSchema);
+
