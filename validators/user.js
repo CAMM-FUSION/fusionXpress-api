@@ -37,7 +37,7 @@ export const loginVendorValidator = Joi.object({
 
 
 // validate updateDashboard
-export const updateProfileValidator = Joi.object({
+export const updateVendorProfileValidator = Joi.object({
     name: Joi.string(),
     avatar: Joi.string()
 });

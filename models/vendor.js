@@ -8,10 +8,8 @@ const vendorSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     avatar: { type: String },
-    user: { type: Types.ObjectId, required: true, ref: 'Vendor'},
-    role: {
-        type: String, default: 'vendor', required: true
-    }
+    user: { type: Types.ObjectId, ref: 'Vendor'},
+    role: {type: String, default: 'vendor', enum: ["vendor"] }
     }, {
     timestamps: true
 });
