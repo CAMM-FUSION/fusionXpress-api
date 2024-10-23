@@ -6,7 +6,7 @@ export const localUpload = multer({ dest: 'uploads/' });
 export const adsUpload = multer({
     storage: multerSaveFilesOrg({
         apiAccessToken:
-        process.env.SAVEFILESORG_API_KEY,
+            process.env.SAVEFILESORG_API_KEY,
         relativePath: '/ads-api/ads/*'
     }),
     preservePath: true
@@ -15,7 +15,7 @@ export const adsUpload = multer({
 export const userAvartarUpload = multer({
     storage: multerSaveFilesOrg({
         apiAccessToken:
-        process.env.SAVEFILESORG_API_KEY,
+            process.env.SAVEFILESORG_API_KEY,
         relativePath: '/ads-api/users/*'
     }),
     preservePath: true

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { loginVendor, signupVendor, logoutVendor, getProfile, updateProfile } from "../controllers/user.js";
 import { userAvartarUpload } from "../middlewares/upload.js";
 import { hasPermission, isAuthenticated } from "../middlewares/auth.js"
+import { getVendorProfile, loginVendor, logoutVendor, signupVendor, updateVendorProfile } from "../controllers/userController.js";
 
 const vendorRouter = Router()
 
@@ -9,8 +9,8 @@ const vendorRouter = Router()
 vendorRouter.post('/vendors/signup', signupVendor);
 vendorRouter.post('/vendors/login', loginVendor);
 vendorRouter.get('vendors/logout', isAuthenticated, logoutVendor);
-vendorRouter.get('/vendors/me', isAuthenticated, hasPermission('get_profile'), getProfile);
-vendorRouter.patch('/vendors/me', isAuthenticated, hasPermission('update_profile'), userAvartarUpload.single('avatar'), updateProfile)
+vendorRouter.get('/vendors/me', isAuthenticated, hasPermission('get_profile'), getVendorProfile);
+vendorRouter.patch('/vendors/me', isAuthenticated, hasPermission('update_profile'), userAvartarUpload.single('avatar'), updateVendorProfile)
 
 // export router
 export default vendorRouter
