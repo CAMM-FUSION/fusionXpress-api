@@ -1,4 +1,5 @@
-import { signupUserValidator, loginUserValidator, signupVendorValidator, loginVendorValidator, updateVendorProfileValidator } from "../validators/user.js";
+import { signupUserValidator, loginUserValidator } from "../validators/user.js";
+import { signupVendorValidator, loginVendorValidator, updateProfileValidator } from "../validators/vendor.js";
 import { UserModel } from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
