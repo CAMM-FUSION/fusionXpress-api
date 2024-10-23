@@ -32,6 +32,7 @@ export const hasPermission = (action) => {
     }
 }
 
+// permission for user
 export const userPermission = (action) => {
     return async (req, res, next) => {
         try{
