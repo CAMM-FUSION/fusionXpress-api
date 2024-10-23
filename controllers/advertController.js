@@ -1,5 +1,5 @@
-import Advert from "../models/advertModel.js";
-import mongoose from "mongoose";
+import AdvertModel from "../models/advertModel.js";
+import { createAdvertValidator } from "../validators/validateAdverts.js";
 
 
 // Search Products
@@ -12,7 +12,7 @@ export const searchAdverts = async (req, res) => {
     if (price) query.price = { $regex: price };  
     if (category) query.category = { $regex: category, $options: "i" };
     console.log(query);
-    const adverts = await Advert.find(query);
+    const adverts = await AdvertModel.find(query);
     res.status(200).json(adverts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -20,29 +20,51 @@ export const searchAdverts = async (req, res) => {
 }
 
 // Create a new advert (Vendor only)
-export const createAdvert = async (req, res) => {
+// export const createAdvert = async (req, res) => {
+//   try {
+//     const { title, category, description, price, image } = req.body;
+
+//     // Create a new book object with image path
+//     const newAdvert = new Advert({
+//       title,
+//       category,
+//       description,
+//       price: Number(price),
+//       image
+//     });
+
+//     // Save the new advert to the database
+//     await newAdvert.save();
+
+//     // Send a response with the newly created book
+//     res.status(201).json({ success: true, message: 'Advert added successfully', data: newAdvert });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'Failed to add advert' });
+//   }
+// };
+
+export const createAdvert = async (req, res, next) => {
   try {
-    const { title, category, description, price, image } = req.body;
-
-    // Create a new book object with image path
-    const newAdvert = new Advert({
-      title,
-      category,
-      description,
-      price: Number(price),
-      image
+    // Validate Vendor input
+    const { error, value } = createAdvertValidator.validate({
+      ...req.body,
+        image: req.file?.filename
     });
-
-    // Save the new advert to the database
-    await newAdvert.save();
-
-    // Send a response with the newly created book
-    res.status(201).json({ success: true, message: 'Advert added successfully', data: newAdvert });
+    if (error) {
+      return res.status(422).json(error);
+    }
+    //  Write advert to database
+    await AdvertModel.create({
+      ...value,
+      vendor: req.auth.id
+    })
+    // Send a success response
+    res.status(201).json('Advert added successfully');
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Failed to add advert' });
+    next(error);
   }
-};
+}
 
 // Update an advert (Vendor only)
 export const updateAdvert = async (req, res) => {
@@ -66,7 +88,7 @@ export const updateAdvert = async (req, res) => {
     };
 
     // Find the Advert by ID and update it
-    const updatedAdvert = await Advert.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
+    const updatedAdvert = await AdvertModel.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
 
     if (!updatedAdvert) return res.status(404).json({ success: false, message: 'Advert not found' });
 
@@ -89,7 +111,7 @@ export const deleteAdvert = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid Advert ID' });
     }
 
-    const deleteAdvert = await Advert.findByIdAndDelete(id);  // Delete the book by its ID
+    const deleteAdvert = await AdvertModel.findByIdAndDelete(id);  // Delete the book by its ID
     if (!deleteAdvert) {
       return res.status(404).json({ success: false, message: 'Advert not found' });
     }
@@ -106,7 +128,7 @@ export const getAdvertsByCategory = async (req, res) => {
   const { category } = req.params;
 
   try {
-    const adverts = await Advert.find({ category });
+    const adverts = await AdvertModel.find({ category });
 
     if (!adverts.length) {
       return res.status(404).json({ message: 'No adverts found for this category' });
@@ -143,7 +165,7 @@ export const countAdverts = async (req, res, next) => {
   try {
     const { filter = '{}' } = req.query;
     // Count adverts in database
-    const count = await advertModel.countDocuments(JSON.parse(filter));
+    const count = await AdvertModel.countDocuments(JSON.parse(filter));
     // Send response
     res.status({ count });
   } catch (error) {
@@ -154,7 +176,7 @@ export const countAdverts = async (req, res, next) => {
 // Get a single advert (any user)
 export const getAdvert = async (req, res) => {
   try {
-    const advert = await Advert.findById(req.params.id);
+    const advert = await AdvertModel.findById(req.params.id);
     if (!product)
       return res
         .status(404)

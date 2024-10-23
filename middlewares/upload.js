@@ -1,13 +1,13 @@
 import multer from "multer";
 import { multerSaveFilesOrg } from "multer-savefilesorg";
 
-export const localUpload = multer({ dest: 'uploads/' });
+// export const localUpload = multer({ dest: 'uploads/' });
 
-export const adsUpload = multer({
+export const advertIconUpload = multer({
     storage: multerSaveFilesOrg({
         apiAccessToken:
-            process.env.SAVEFILESORG_API_KEY,
-        relativePath: '/ads-api/ads/*'
+        process.env.SAVEFILESORG_API_KEY,
+        relativePath: '/advert-app/*'
     }),
     preservePath: true
 });
