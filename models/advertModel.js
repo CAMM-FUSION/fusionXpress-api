@@ -2,6 +2,7 @@ export const adverts = [];
 import { Types, model, Schema } from "mongoose";
 import { toJSON } from "@reis/mongoose-to-json";
 
+
 const advertSchema = new Schema(
   {
     title: { type: String, required: true },
@@ -12,7 +13,7 @@ const advertSchema = new Schema(
 
     description: { type: String, required: true },
 
-    image: { type: String },
+    image: { type: String, required : true },
 
     vendor: { type: Types.ObjectId, required: true, ref: "Vendor" },
 

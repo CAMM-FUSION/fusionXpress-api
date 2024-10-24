@@ -10,17 +10,12 @@ export const isAuthenticated = expressjwt({
   // userProperty: 'auth',
 });
 
-// Function to check if a vendor has the required permission for a specific action
-// const checkPermission = (vendor, action) => {
-//   const permission = permissions.find((permission) => permission.role === vendor.role);
-//   return permission ? permission.actions.includes(action) : false;
-// };
 
-// Middleware to check if the vendor has permission to perform an action
+
 export const hasPermission = (action) => {
   return async (req, res, next) => {
     try {
-            // Retrieve the authenticated vendor
+      // Retrieve the authenticated vendor
       const vendor = await VendorModel.findById(req.auth.id);
 
       // Use the user role to define the permission
@@ -28,17 +23,46 @@ export const hasPermission = (action) => {
       if (!permission) {
         return res.status(404).json({ message: 'No permission found!' });
       }
+
       // Check if the vendor has the required permission
-      if (permission.actions.includes(action)) {
+      // Changed the logic here - now proceeds if action is found
+      if (!permission.actions.includes(action)) {  // Added ! operator
         return res.status(403).json('Action not allowed!');
       }
+      
       next(); // Proceed to the next middleware/route handler if permitted
     } catch (error) {
-      next(error); // Pass errors to the error-handling middleware
-
+      next(error);
     }
   };
 };
+
+
+
+
+// Middleware to check if the vendor has permission to perform an action
+// export const hasPermission = (action) => {
+//   return async (req, res, next) => {
+//     try {
+//             // Retrieve the authenticated vendor
+//       const vendor = await VendorModel.findById(req.auth.id);
+
+//       // Use the user role to define the permission
+//       const permission = permissions.find(value => value.role === vendor.role);
+//       if (!permission) {
+//         return res.status(404).json({ message: 'No permission found!' });
+//       }
+//       // Check if the vendor has the required permission
+//       if (permission.actions.includes(action)) {
+//         return res.status(403).json('Action not allowed!');
+//       }
+//       next(); // Proceed to the next middleware/route handler if permitted
+//     } catch (error) {
+//       next(error); // Pass errors to the error-handling middleware
+
+//     }
+//   };
+// };
 
 // permission for user
 export const userPermission = (action) => {

@@ -9,8 +9,8 @@ const router = Router();
 router.get('/adverts/category/:category', getAdvertsByCategory);
 
 // Private routes (Vendor only)
-router.post('/adverts', isAuthenticated, hasPermission('create_advert'), advertIconUpload.single('image'), createAdvert); // Vendors Create
-router.patch('/adverts/:id', updateAdvert); // Vendors update
+router.post('/adverts', isAuthenticated, hasPermission('create_advert'), advertIconUpload, createAdvert );
+router.patch('/adverts/:id', isAuthenticated, hasPermission('update_advert'), advertIconUpload, updateAdvert); // Vendors update
 router.delete('/adverts/:id', deleteAdvert); // Vendors delete
 
 // Public routes

@@ -5,7 +5,6 @@ export const signupUserValidator = Joi.object({
     username: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    username: Joi.string().required(),
     role: Joi.string()
 
 });
@@ -36,6 +35,7 @@ export const loginVendorValidator = Joi.object({
 
 // validate updateDashboard
 export const updateVendorProfileValidator = Joi.object({
-    name: Joi.string(),
-    avatar: Joi.string()
+    fullName: Joi.string(),
+    image: Joi.string(),
+    phoneNumber: Joi.number(),
 });
