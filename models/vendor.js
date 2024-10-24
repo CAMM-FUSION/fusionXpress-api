@@ -14,6 +14,7 @@ const vendorSchema = new Schema({
     timestamps: true
 });
 
+
 vendorSchema.plugin(toJSON);
 
 export const VendorModel = model('Vendor', vendorSchema);

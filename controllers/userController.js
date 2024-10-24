@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { mailTransporter } from "../utils/mail.js";
 import { VendorModel } from "../models/vendor.js";
+import AdvertModel from "../models/advertModel.js";
 
 // User signup
 export const signupUser = async (req, res, next) => {
@@ -188,6 +189,23 @@ export const getVendorProfile = async (req, res, next) => {
         .select({ password: false });
         // Respond to request
         res.json(vendor);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getVendorAdverts = async (req, res, next) => {
+    try {
+        const { filter = "{}", sort = "{}", limit =10,skip =0 } = req.query;
+    const advert = await AdvertModel
+    .find({
+        ...JSON.parse(filter),
+        vendor: req.auth.id
+    })
+    .sort(JSON.parse(sort))
+    .limit(limit)
+    .skip(skip);
+    res.status(200).json({ success: true, data: advert });
     } catch (error) {
         next(error);
     }

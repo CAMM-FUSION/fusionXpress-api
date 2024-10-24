@@ -7,7 +7,6 @@ import { UserModel } from "../models/user.js";
 export const isAuthenticated = expressjwt({
   secret: process.env.JWT_PRIVATE_KEY,
   algorithms: ['HS256']
-  // userProperty: 'auth',
 });
 
 
@@ -23,11 +22,6 @@ export const hasPermission = (action) => {
           message: 'Vendor not found' 
         });
       }
-
-      // Log for debugging
-      console.log('Vendor found:', vendor);
-      console.log('Vendor role:', vendor.role);
-      console.log('Required action:', action);
 
       // Check if vendor has a role
       if (!vendor.role) {
@@ -68,63 +62,6 @@ export const hasPermission = (action) => {
   };
 };
 
-// Define your permissions array (make sure this is in scope)
-
-
-
-
-
-// export const hasPermission = (action) => {
-//   return async (req, res, next) => {
-//     try {
-//       // Retrieve the authenticated vendor
-//       const vendor = await VendorModel.findById(req.auth.id);
-
-//       // Use the user role to define the permission
-//       const permission = permissions.find(value => value.role === vendor.role);
-//       if (!permission) {
-//         return res.status(404).json({ message: 'No permission found!' });
-//       }
-
-//       // Check if the vendor has the required permission
-//       // Changed the logic here - now proceeds if action is found
-//       if (!permission.actions.includes(action)) {  // Added ! operator
-//         return res.status(403).json('Action not allowed!');
-//       }
-      
-//       next(); // Proceed to the next middleware/route handler if permitted
-//     } catch (error) {
-//       next(error);
-//     }
-//   };
-// };
-
-
-
-
-// Middleware to check if the vendor has permission to perform an action
-// export const hasPermission = (action) => {
-//   return async (req, res, next) => {
-//     try {
-//             // Retrieve the authenticated vendor
-//       const vendor = await VendorModel.findById(req.auth.id);
-
-//       // Use the user role to define the permission
-//       const permission = permissions.find(value => value.role === vendor.role);
-//       if (!permission) {
-//         return res.status(404).json({ message: 'No permission found!' });
-//       }
-//       // Check if the vendor has the required permission
-//       if (permission.actions.includes(action)) {
-//         return res.status(403).json('Action not allowed!');
-//       }
-//       next(); // Proceed to the next middleware/route handler if permitted
-//     } catch (error) {
-//       next(error); // Pass errors to the error-handling middleware
-
-//     }
-//   };
-// };
 
 // permission for user
 export const userPermission = (action) => {
