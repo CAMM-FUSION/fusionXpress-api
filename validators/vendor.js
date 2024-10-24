@@ -26,5 +26,6 @@ export const getProfileValidator = Joi.object({
 // validate update profile
 export const updateProfileValidator = Joi.object({
     name: Joi.string(),
-    avatar: Joi.string()
+    image: Joi.string(),
+    
 });
