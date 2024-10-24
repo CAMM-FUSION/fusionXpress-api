@@ -11,31 +11,93 @@ export const isAuthenticated = expressjwt({
 });
 
 
-
 export const hasPermission = (action) => {
   return async (req, res, next) => {
     try {
       // Retrieve the authenticated vendor
       const vendor = await VendorModel.findById(req.auth.id);
 
-      // Use the user role to define the permission
+      // Check if vendor exists first
+      if (!vendor) {
+        return res.status(404).json({ 
+          message: 'Vendor not found' 
+        });
+      }
+
+      // Log for debugging
+      console.log('Vendor found:', vendor);
+      console.log('Vendor role:', vendor.role);
+      console.log('Required action:', action);
+
+      // Check if vendor has a role
+      if (!vendor.role) {
+        return res.status(400).json({ 
+          message: 'Vendor role not defined' 
+        });
+      }
+
+      console.log('Generated token for vendor:', {
+        id: vendor.id,
+        role: vendor.role
+      })
+
+      // Use the vendor role to define the permission
       const permission = permissions.find(value => value.role === vendor.role);
       if (!permission) {
-        return res.status(404).json({ message: 'No permission found!' });
+        return res.status(404).json({ 
+          message: `No permissions found for role: ${vendor.role}` 
+        });
       }
 
       // Check if the vendor has the required permission
-      // Changed the logic here - now proceeds if action is found
-      if (!permission.actions.includes(action)) {  // Added ! operator
-        return res.status(403).json('Action not allowed!');
+      if (!permission.actions.includes(action)) {
+        return res.status(403).json({ 
+          message: `Action '${action}' not allowed for role '${vendor.role}'` 
+        });
       }
       
-      next(); // Proceed to the next middleware/route handler if permitted
+      // If all checks pass, proceed
+      next();
     } catch (error) {
-      next(error);
+      console.error('Permission check error:', error);
+      return res.status(500).json({ 
+        message: 'Error checking permissions',
+        error: error.message 
+      });
     }
   };
 };
+
+// Define your permissions array (make sure this is in scope)
+
+
+
+
+
+// export const hasPermission = (action) => {
+//   return async (req, res, next) => {
+//     try {
+//       // Retrieve the authenticated vendor
+//       const vendor = await VendorModel.findById(req.auth.id);
+
+//       // Use the user role to define the permission
+//       const permission = permissions.find(value => value.role === vendor.role);
+//       if (!permission) {
+//         return res.status(404).json({ message: 'No permission found!' });
+//       }
+
+//       // Check if the vendor has the required permission
+//       // Changed the logic here - now proceeds if action is found
+//       if (!permission.actions.includes(action)) {  // Added ! operator
+//         return res.status(403).json('Action not allowed!');
+//       }
+      
+//       next(); // Proceed to the next middleware/route handler if permitted
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+// };
 
 
 
