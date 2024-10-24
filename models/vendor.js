@@ -9,7 +9,7 @@ const vendorSchema = new Schema({
     password: { type: String, required: true },
     avatar: { type: String },
     // user: { type: Types.ObjectId, ref: 'Vendor'},
-    role: {type: String, default: 'vendor', enum: ["vendor"] }
+    role: {type: String, default: 'vendor', enum: ["vendor", "admin"] }
     }, {
     timestamps: true
 });
