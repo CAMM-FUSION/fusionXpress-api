@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { userAvartarUpload } from "../middlewares/upload.js";
-import { hasPermission, isAuthenticated, userPermission } from "../middlewares/auth.js"
+import {  isAuthenticated, userPermission } from "../middlewares/auth.js"
 import { getUserProfile, loginUser, logoutUser, signupUser } from "../controllers/userController.js";
 
 const userRouter = Router()

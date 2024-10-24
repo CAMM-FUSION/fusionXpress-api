@@ -5,18 +5,18 @@ import { multerSaveFilesOrg } from "multer-savefilesorg";
 
 export const advertIconUpload = multer({
     storage: multerSaveFilesOrg({
-        apiAccessToken:
-        process.env.SAVEFILESORG_API_KEY,
+        apiAccessToken: process.env.SAVEFILESORG_API_KEY,
         relativePath: '/advert-app/*'
+    }),
+    preservePath: true
+}).single('image');
+
+export const userAvatarUpload = multer({
+    storage: multerSaveFilesOrg({
+        apiAccessToken:
+            process.env.SAVEFILESORG_API_KEY,
+        relativePath: '/advert-app/users/*'
     }),
     preservePath: true
 });
 
-export const userAvartarUpload = multer({
-    storage: multerSaveFilesOrg({
-        apiAccessToken:
-            process.env.SAVEFILESORG_API_KEY,
-        relativePath: '/ads-api/users/*'
-    }),
-    preservePath: true
-});

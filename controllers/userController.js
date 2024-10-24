@@ -1,5 +1,5 @@
 import { signupUserValidator, loginUserValidator } from "../validators/user.js";
-import { signupVendorValidator, loginVendorValidator, updateProfileValidator } from "../validators/vendor.js";
+import { signupVendorValidator, loginVendorValidator } from "../validators/vendor.js";
 import { UserModel } from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -92,7 +92,7 @@ export const getUserProfile = async (req, res, next) => {
 // Update user's profile
 export const updateUserProfile =  async (req, res, next) => {
     try {
-        const { error, value } = updateVendorProfileValidator.validate({
+        const { error, value } = updateProfileValidator.validate({
             ...req.body,
             avatar: req.file?.filename
         });

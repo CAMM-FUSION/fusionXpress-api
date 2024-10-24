@@ -12,8 +12,8 @@ export const permissions = [
         actions: [
             'get_profile',
             'update_profile',
-            'create_adverts',
-            'update_adverts',
+            'create_advert',
+            'update_advert',
             'delete_adverts'
         ]
     }

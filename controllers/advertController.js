@@ -1,5 +1,6 @@
 import AdvertModel from "../models/advertModel.js";
-import { createAdvertValidator } from "../validators/validateAdverts.js";
+import { createAdvertValidator, updateAdvertValidator } from "../validators/validateAdverts.js";
+import mongoose from "mongoose";
 
 
 // Search Products
@@ -46,59 +47,120 @@ export const searchAdverts = async (req, res) => {
 
 export const createAdvert = async (req, res, next) => {
   try {
-    // Validate Vendor input
+    
+    // Check for file
+    if (!req.file) {
+      console.log('No file detected in request');
+      return res.status(400).json({ message: 'Image file is required' });
+    }
+
+    // Get the image path
+    const imagePath = req.file.url || req.file.path || req.file.filename;
+    console.log('Image path:', imagePath);
+
+    // Validate inputs
     const { error, value } = createAdvertValidator.validate({
       ...req.body,
-        image: req.file?.filename
+      image: imagePath
     });
+
     if (error) {
       return res.status(422).json(error);
     }
-    //  Write advert to database
-    await AdvertModel.create({
+
+    // Create advert
+    const newAdvert = await AdvertModel.create({
       ...value,
       vendor: req.auth.id
-    })
-    // Send a success response
-    res.status(201).json('Advert added successfully');
+    });
+
+    res.status(201).json({
+      message: 'Advert added successfully',
+      advert: newAdvert
+    });
+    
+  } catch (error) {
+    console.error('Error in createAdvert:', error);
+    next(error);
+  }
+};
+
+
+// Update an advert (Vendor only)
+export const updateAdvert = async (req, res, next) => {
+  try {
+    // Get the advert ID from params
+    const { id } = req.params;
+
+    // Check if there's a new image file
+    const imageUpdate = req.file ? 
+      { image: req.file.url || req.file.path || req.file.filename } : 
+      {};
+
+    // Validate the update data
+    const { error, value } = createAdvertValidator.validate({
+      ...req.body,
+      ...imageUpdate
+    });
+
+    if (error) {
+      return res.status(422).json(error);
+    }
+
+    // Update the advert
+    const updatedAdvert = await AdvertModel.findOneAndUpdate(
+      { _id: id, vendor: req.auth.id },  // Only update if advert belongs to this vendor
+      { ...value },
+      { new: true }  // Return the updated document
+    );
+
+    if (!updatedAdvert) {
+      return res.status(404).json({ message: 'Advert not found or unauthorized' });
+    }
+
+    res.status(200).json({
+      message: 'Advert updated successfully',
+      advert: updatedAdvert
+    });
+
   } catch (error) {
     next(error);
   }
-}
+};
 
 // Update an advert (Vendor only)
-export const updateAdvert = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, category, description, price, image } = req.body;
+// export const updateAdvert = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { title, category, description, price, image } = req.body;
 
-    // Validate MongoDB ObjectId (in case it's invalid)
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ success: false, message: 'Invalid Advert ID' });
-    }
+//     // Validate MongoDB ObjectId (in case it's invalid)
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({ success: false, message: 'Invalid Advert ID' });
+//     }
 
 
-    // Prepare the updated data (only update fields that are provided)
-    const updatedData = {
-      title: title || undefined,
-      category: category || undefined,
-      description: description || undefined,
-      price: price || undefined,
-      image: image|| undefined,  // Only update if a new image was uploaded
-    };
+//     // Prepare the updated data (only update fields that are provided)
+//     const updatedData = {
+//       title: title || undefined,
+//       category: category || undefined,
+//       description: description || undefined,
+//       price: price || undefined,
+//       image: image|| undefined,  // Only update if a new image was uploaded
+//     };
 
-    // Find the Advert by ID and update it
-    const updatedAdvert = await AdvertModel.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
+//     // Find the Advert by ID and update it
+//     const updatedAdvert = await AdvertModel.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
 
-    if (!updatedAdvert) return res.status(404).json({ success: false, message: 'Advert not found' });
+//     if (!updatedAdvert) return res.status(404).json({ success: false, message: 'Advert not found' });
 
-    // Send the updated book data
-    res.status(200).json({ success: true, data: updatedAdvert });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Failed to update Advert' });
-  }
-};
+//     // Send the updated book data
+//     res.status(200).json({ success: true, data: updatedAdvert });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'Failed to update Advert' });
+//   }
+// };
 
 
 // Delete an advert (Vendor only)
@@ -145,7 +207,7 @@ export const getAdvertsByCategory = async (req, res) => {
 export const getAdverts = async (req, res) => {
   try {
     const { filter = "{}", sort = "{}", limit =10,skip =0 } = req.query;
-    const advert = await Advert
+    const advert = await AdvertModel
     .find(JSON.parse(filter))
     .sort(JSON.parse(sort))
     .limit(limit)
@@ -177,7 +239,7 @@ export const countAdverts = async (req, res, next) => {
 export const getAdvert = async (req, res) => {
   try {
     const advert = await AdvertModel.findById(req.params.id);
-    if (!product)
+    if (!advert)
       return res
         .status(404)
         .json({ success: false, message: "Advert not found" });
