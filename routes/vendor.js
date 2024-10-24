@@ -18,7 +18,7 @@ vendorRouter.get('/vendors/me', isAuthenticated, hasPermission('get_profile'), g
 
 vendorRouter.get('/vendors/me/adverts', isAuthenticated, getVendorAdverts);
 
-vendorRouter.patch('/vendors/me', isAuthenticated, hasPermission('update_profile'), userAvatarUpload.single('avatar') ,updateProfile)
+vendorRouter.patch('/vendors/me', isAuthenticated, hasPermission('update_profile'), userAvatarUpload.single('image') ,updateProfile)
 
 // export router
 export default vendorRouter

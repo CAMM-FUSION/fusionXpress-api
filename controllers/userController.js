@@ -214,7 +214,7 @@ export const getVendorAdverts = async (req, res, next) => {
 // Update vendor's profile
 export const updateVendorProfile =  async (req, res, next) => {
     try {
-        const { error, value } = updateVendorProfileValidator.validate({
+        const { error, value } = updateVendorProfile.validate({
             ...req.body,
             avatar: req.file?.filename
         });
