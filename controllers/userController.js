@@ -32,7 +32,7 @@ export const signupUser = async (req, res, next) => {
             from: process.env.MAIL_USER,
             to: value.email,
             subject: "User Signup",
-            text: "User Sign up successful"
+            text: "User Registration Successfully"
         });
         // Respond to request
         res.json("User Signed up")
@@ -137,7 +137,7 @@ export const signupVendor = async (req, res, next) => {
         from: process.env.MAIL_USER,
         to: value.email,
         subject: "Vendor Signup",
-        text: "Vendor Sign up successful"
+        text: "Vendor Registered Successfully"
     });
         // Respond to request
         res.json("Vendor Signed up")
