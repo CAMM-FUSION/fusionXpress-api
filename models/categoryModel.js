@@ -4,13 +4,15 @@ import { toJSON } from "@reis/mongoose-to-json";
 const categorySchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
 
     description: {
         type: String
     }
 });
+
 
 // Apply toJSON plugin
 categorySchema.plugin(toJSON);

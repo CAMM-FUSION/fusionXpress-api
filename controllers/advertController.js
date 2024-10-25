@@ -1,6 +1,7 @@
 import AdvertModel from "../models/advertModel.js";
 import { createAdvertValidator, updateAdvertValidator } from "../validators/validateAdverts.js";
 import mongoose from "mongoose";
+import { Category } from "../models/categoryModel.js";
 
 
 // Search Products
@@ -12,7 +13,6 @@ export const searchAdverts = async (req, res) => {
     if (title) query.title = { $regex: title, $options: "i" };
     if (price) query.price = { $regex: price };  
     if (category) query.category = { $regex: category, $options: "i" };
-    console.log(query);
     const adverts = await AdvertModel.find(query);
     res.status(200).json(adverts);
   } catch (error) {
@@ -27,13 +27,21 @@ export const createAdvert = async (req, res, next) => {
     
     // Check for file
     if (!req.file) {
-      console.log('No file detected in request');
       return res.status(400).json({ message: 'Image file is required' });
     }
 
     // Get the image path
     const imagePath = req.file.url || req.file.path || req.file.filename;
     console.log('Image path:', imagePath);
+
+    // Verify if category exists
+    const categoryDoc = await Category.findOne({ name: { $regex: new RegExp(req.body.category, 'i') } });
+
+    if (!categoryDoc) {
+      // Get available categories for the user
+      const categories = await Category.find().select('name');
+      return res.status(400).json({ message: 'Invalid cayegory. Please choose from available categories.', availableCategories: categories.map(c => c.name) });
+    }
 
     // Validate inputs
     const { error, value } = createAdvertValidator.validate({
@@ -48,7 +56,8 @@ export const createAdvert = async (req, res, next) => {
     // Create advert
     const newAdvert = await AdvertModel.create({
       ...value,
-      vendor: req.auth.id
+      vendor: req.auth.id,
+      category: categoryDoc.name
     });
 
     res.status(201).json({
@@ -129,23 +138,70 @@ export const deleteAdvert = async (req, res) => {
   }
 };
 
-// Get adverts by category
+
 export const getAdvertsByCategory = async (req, res) => {
   const { category } = req.params;
 
   try {
-    const adverts = await AdvertModel.find({ category });
 
-    if (!adverts.length) {
-      return res.status(404).json({ message: 'No adverts found for this category' });
+    // Fixed RegExp syntax
+    const categoryDoc = await Category.findOne({
+      name: { $regex: new RegExp(category, 'i') }
+    });
+
+    if (!categoryDoc) {
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found'
+      });
     }
 
-    res.status(200).json(adverts);
+    // Find adverts with exact category name match
+    const adverts = await AdvertModel.find({
+      category: categoryDoc.name
+    }).populate('vendor');
+
+    if (!adverts.length) {
+      return res.status(404).json({
+        success: false,
+        message: `No adverts found in category: ${categoryDoc.name}`
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      category: categoryDoc.name,
+      count: adverts.length,
+      data: adverts
+    });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
-    
+    console.error('Error in getAdvertsByCategory:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching adverts: ' + error.message
+    });
   }
 };
+
+
+// Get adverts by category
+// export const getAdvertsByCategory = async (req, res) => {
+//   const { category } = req.params;
+
+//   try {
+//     const adverts = await AdvertModel.find({ category });
+
+//     if (!adverts.length) {
+//       return res.status(404).json({ message: 'No adverts found for this category' });
+//     }
+
+//     res.status(200).json(adverts);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+    
+//   }
+// };
 
 // Get all adverts (any user)
 export const getAdverts = async (req, res) => {

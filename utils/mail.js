@@ -8,5 +8,5 @@ export const mailTransporter = createTransport({
         user: "fusionxpress71@gmail.com",
         pass: process.env.SMTP_PASSWORD
     },
-    from: "fusionxpress71@gmail.com"
+    from: "fusionxpress71@gmail.com",
 });
