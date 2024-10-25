@@ -25,7 +25,10 @@ export const getProfileValidator = Joi.object({
 
 // validate update profile
 export const updateProfileValidator = Joi.object({
-    name: Joi.string(),
-    image: Joi.string(),
+        fullName: Joi.string(),
+        storeName: Joi.string(),
+        phoneNumber: Joi.number(),
+        email: Joi.string().email(),
+        avatar: Joi.string()
     
 });

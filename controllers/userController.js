@@ -29,6 +29,7 @@ export const signupUser = async (req, res, next) => {
         });
         // Send user confirmation email
         await mailTransporter.sendMail({
+            from: process.env.MAIL_USER,
             to: value.email,
             subject: "User Signup",
             text: "User Sign up successful"
@@ -78,7 +79,6 @@ export const loginUser = async (req, res, next) => {
 // Get user's profile
 export const getUserProfile = async (req, res, next) => {
     try {
-        console.log(req.auth);
         // Find authenticated user from database
         const user = await UserModel
         .findById(req.auth.id)
@@ -132,11 +132,13 @@ export const signupVendor = async (req, res, next) => {
             password: hashedPassword
         });
         // Send vendor confirmation email
-        await mailTransporter.sendMail({
-            to: value.email,
-            subject: "Vendor Signup",
-            text: "Vendor Sign up successful"
-        });
+       // Send user confirmation email
+       await mailTransporter.sendMail({
+        from: process.env.MAIL_USER,
+        to: value.email,
+        subject: "Vendor Signup",
+        text: "Vendor Sign up successful"
+    });
         // Respond to request
         res.json("Vendor Signed up")
     } catch (error) {
@@ -182,7 +184,6 @@ export const loginVendor = async (req, res, next) => {
 // Get vendor's profile
 export const getVendorProfile = async (req, res, next) => {
     try {
-        console.log(req.auth);
         // Find authenticated vendor from database
         const vendor = await VendorModel
         .findById(req.auth.id)
@@ -211,22 +212,49 @@ export const getVendorAdverts = async (req, res, next) => {
     }
 }
 
-// Update vendor's profile
-export const updateVendorProfile =  async (req, res, next) => {
+
+const updateVendorProfile = async (req, res) => {
     try {
-        const { error, value } = updateVendorProfile.validate({
-            ...req.body,
-            avatar: req.file?.filename
-        });
+        // Validate request body
+        const { error, value } = updateProfileValidator.validate(req.body);
         if (error) {
-            return res.status(422).json(error);
+            return res.status(400).json({ error: error.details[0].message });
         }
-        await VendorModel.findByIdAndUpdate(req.auth.id, value);
-        res.json("Vendor profile updated!");
+
+        // Update vendor profile
+        const updatedVendor = await VendorModel.findByIdAndUpdate(
+            req.vendor._id,  // assuming you have vendor's ID from auth middleware
+            { $set: value },
+            { new: true }
+        );
+
+        res.json({
+            message: "Profile updated successfully",
+            data: updatedVendor
+        });
+
     } catch (error) {
-        next(error); 
+        res.status(500).json({ error: error.message });
     }
-}
+};
+
+
+// Update vendor's profile
+// export const updateVendorProfile =  async (req, res, next) => {
+//     try {
+//         const { error, value } = updateVendorProfile.validate({
+//             ...req.body,
+//             avatar: req.file?.filename
+//         });
+//         if (error) {
+//             return res.status(422).json(error);
+//         }
+//         await VendorModel.findByIdAndUpdate(req.auth.id, value);
+//         res.json("Vendor profile updated!");
+//     } catch (error) {
+//         next(error); 
+//     }
+// }
 
 // Vendor logout
 export const logoutVendor = (req, res, next) => {
