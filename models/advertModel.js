@@ -10,7 +10,7 @@ const advertSchema = new Schema(
 
     category: { type: String, required: true },
 
-    price: { type: mongoose.Schema.Types.Mixed, required: true },
+    price: { type: Number, required: true },
 
     description: { type: String, required: true },
 
